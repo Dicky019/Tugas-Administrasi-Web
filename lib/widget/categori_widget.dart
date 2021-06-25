@@ -64,7 +64,7 @@ class Categori extends StatelessWidget {
               animationDuration: 500,
               percent: value,
               linearStrokeCap: LinearStrokeCap.roundAll,
-              progressColor: Colors.greenAccent,
+              progressColor: Colors.purple,
               padding: const EdgeInsets.symmetric(horizontal: 5.5),
             )
           ],
@@ -73,16 +73,16 @@ class Categori extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-              color: primer,
+              color: Colors.grey,
               width: 1.5,
               style: border == true ? BorderStyle.solid : BorderStyle.none),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               color: Colors.purple.withOpacity(0.2),
-              spreadRadius: 3,
-              blurRadius: 15,
-              offset: Offset(0.5, 8),
+              spreadRadius: -3,
+              blurRadius: 18,
+              offset: Offset(0.5, 10),
             )
           ]),
     );
