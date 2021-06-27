@@ -1,5 +1,4 @@
-import 'dart:js';
-
+import 'package:page_transition/page_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:management_tugas/Pages/input.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -142,9 +141,11 @@ class HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromRGBO(100, 14, 239, 1),
-        onPressed: (){
-           Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => InputPage()));
+        onPressed: () {
+          Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.fade, child: InputPage()));
         },
         tooltip: 'Add Tugas',
         child: Icon(Icons.add),
