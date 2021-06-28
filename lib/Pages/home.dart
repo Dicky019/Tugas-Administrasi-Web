@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:management_tugas/Pages/input.dart';
@@ -13,10 +14,13 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  final CollectionReference collectionReference =
+      FirebaseFirestore.instance.collection('user');
   int task = 0;
   String nameCategori = "Personal";
-  bool border = false, sucses = false;
+  bool border = false;
   double valueCategori = 0;
+  int documents = 0;
 
   void tekanTombol() {
     setState(() {
@@ -24,11 +28,13 @@ class HomeState extends State<Home> {
     });
   }
 
-  void onsucses() {
-    setState(() {
-      sucses = !sucses;
-      sucses == true ? valueCategori = 1 : valueCategori = 0;
-    });
+  Future onsucses(bool sucses, String id) async {
+    collectionReference
+        .doc(id)
+        .update({'onsuccses': !sucses}).whenComplete(() => setState(() {
+              sucses = !sucses;
+              sucses == true ? valueCategori = 1 : valueCategori = 0;
+            }));
   }
 
   var alertStyle = AlertStyle(
@@ -39,7 +45,7 @@ class HomeState extends State<Home> {
     descStyle: TextStyle(fontSize: 14),
   );
 
-  alert() {
+  Future delete(String id) async {
     Alert(
       style: alertStyle,
       context: this.context,
@@ -52,7 +58,17 @@ class HomeState extends State<Home> {
             "Yes",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: () => Navigator.pop(this.context),
+          onPressed: () {
+            collectionReference.doc(id).delete().timeout(Duration(seconds: 3),
+                onTimeout: () {
+              Alert(
+                context: this.context,
+                title: "Timeout",
+                type: AlertType.info,
+                desc: "Periksa Koneksi Anda...",
+              );
+            }).whenComplete(() => Navigator.pop(this.context));
+          },
           color: Colors.redAccent[400],
         ),
         DialogButton(
@@ -121,20 +137,52 @@ class HomeState extends State<Home> {
                 height: 45,
               ),
               TextWidget(
-                  size: 16,
-                  color: second,
-                  fontWeight: FontWeight.w500,
-                  text: "TASKS LIST"),
-              SizedBox(
-                height: 10,
+                size: 16,
+                color: second,
+                fontWeight: FontWeight.w500,
+                text: "TASKS LIST",
               ),
-              ListTask(
-                sucses: sucses,
-                onTapSucses: onsucses,
-                onTapCancel: alert,
-                nameCategori: nameCategori,
-                nameTask: "tugas 1",
-              )
+              Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                stream: collectionReference.snapshots(),
+                builder: (_, snapshot) {
+                  if (snapshot.hasData) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Center(
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            child: new CircularProgressIndicator(),
+                          ),
+                        );
+                      default:
+                        return ListView(
+                          padding: EdgeInsets.only(top: 8),
+                          children: snapshot.data!.docs
+                              .map(
+                                (e) => ListTask(
+                                    onTapSucses: () {
+                                      onsucses(e['onsuccses'], e.id);
+                                    },
+                                    nameCategori: e['pelajaran'],
+                                    nameTask: "Dicky",
+                                    onTapCancel: () {
+                                      delete(e.id);
+                                    },
+                                    sucses: e['onsuccses'],
+                                    catatan: e['catatan'],
+                                    deadLine: "deadLine"),
+                              )
+                              .toList(),
+                        );
+                    }
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              )),
             ],
           ),
         ),
