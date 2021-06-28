@@ -2,25 +2,38 @@ import 'package:flutter/material.dart';
 
 import '../assets.dart';
 
-class ListTask extends StatelessWidget {
-  final Function() onTapSucses;
+class ListTask extends StatefulWidget {
+  
   final Function() onTapCancel;
   final String nameCategori, catatan;
   final String nameTask, deadLine;
-  final bool sucses;
+  
   const ListTask(
-      {required this.onTapSucses,
+      {
       Key? key,
       required this.nameCategori,
       required this.nameTask,
       required this.onTapCancel,
-      required this.sucses,
+      
       required this.catatan,
-      required this.deadLine})
+      required this.deadLine,})
       : super(key: key);
 
   @override
+  _ListTaskState createState() => _ListTaskState();
+}
+
+class _ListTaskState extends State<ListTask> {
+  late bool sucses= false;
+  void onsucses() {
+    setState(() {
+      sucses = !sucses;
+      
+    });
+  }
+  @override
   Widget build(BuildContext context) {
+    
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -41,7 +54,8 @@ class ListTask extends StatelessWidget {
             flex: 2,
             child: Center(
               child: InkWell(
-                onTap: onTapSucses,
+                
+                onTap: onsucses,
                 child: Container(
                   height: 26,
                   width: 26,
@@ -79,7 +93,7 @@ class ListTask extends StatelessWidget {
                               horizontal: 7, vertical: 2),
                           color: Colors.grey,
                           child: Text(
-                            nameCategori,
+                            widget.nameCategori,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.start,
                             style: TextStyle(
@@ -89,7 +103,7 @@ class ListTask extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        nameTask,
+                        widget.nameTask,
                         style: sucses == false
                             ? TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w700)
@@ -104,7 +118,7 @@ class ListTask extends StatelessWidget {
                         height: 3,
                       ),
                       Text(
-                        catatan,
+                        widget.catatan,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: sucses == false
@@ -121,7 +135,7 @@ class ListTask extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    deadLine,
+                    widget.deadLine,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: sucses == false
@@ -139,7 +153,7 @@ class ListTask extends StatelessWidget {
           Expanded(
             flex: 2,
             child: IconButton(
-                onPressed: onTapCancel,
+                onPressed: widget.onTapCancel,
                 iconSize: 30,
                 icon: Icon(Icons.cancel_rounded)),
           ),

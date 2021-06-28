@@ -18,7 +18,7 @@ class HomeState extends State<Home> {
       FirebaseFirestore.instance.collection('user');
   int task = 0;
   String nameCategori = "Personal";
-  bool border = false;
+  bool border = false, sucses = false;
   double valueCategori = 0;
   int documents = 0;
 
@@ -26,15 +26,6 @@ class HomeState extends State<Home> {
     setState(() {
       border = !border;
     });
-  }
-
-  Future onsucses(bool sucses, String id) async {
-    collectionReference
-        .doc(id)
-        .update({'onsuccses': !sucses}).whenComplete(() => setState(() {
-              sucses = !sucses;
-              sucses == true ? valueCategori = 1 : valueCategori = 0;
-            }));
   }
 
   var alertStyle = AlertStyle(
@@ -162,15 +153,11 @@ class HomeState extends State<Home> {
                           children: snapshot.data!.docs
                               .map(
                                 (e) => ListTask(
-                                    onTapSucses: () {
-                                      onsucses(e['onsuccses'], e.id);
-                                    },
+                                    // valueCategori: valueCategori,
                                     nameCategori: e['pelajaran'],
                                     nameTask: "Dicky",
-                                    onTapCancel: () {
-                                      delete(e.id);
-                                    },
-                                    sucses: e['onsuccses'],
+                                    onTapCancel: (){delete(e.id);},
+                                    
                                     catatan: e['catatan'],
                                     deadLine: "deadLine"),
                               )

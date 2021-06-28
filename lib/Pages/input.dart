@@ -318,7 +318,7 @@ class _InputPageState extends State<InputPage> {
       'kelas': kelas.toString() == "" ? "Belum Diisi" : kelas.toString(),
       'deadline': i == "" ? "Belum Diisi" : i,
       'catatan': catatan == "" ? "Belum Diisi" : catatan,
-      'onsuccses' : false
+      
     }).whenComplete(() {
       setState(() {
         _loading = !_loading;
