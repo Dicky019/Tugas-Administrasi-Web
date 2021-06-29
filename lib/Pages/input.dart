@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:intl/intl.dart';
 import 'package:management_tugas/widget/text_widget.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../assets.dart';
 
@@ -299,16 +298,8 @@ class _InputPageState extends State<InputPage> {
   }
 
   Future add() async {
-    connectivity = await Connectivity().checkConnectivity();
-    if (connectivity == ConnectivityResult.none) {
-      Alert(
-        context: this.context,
-        title: "Timeout",
-        type: AlertType.info,
-        desc: "Periksa Koneksi Anda...",
-      );
-    }
-    String catatan = _controller.document.toPlainText().toString();
+    var catatantampil = _controller.document.toPlainText().toString();
+    var catatan = jsonEncode(_controller.document.toDelta().toJson());
     setState(() {
       _loading = !_loading;
     });
@@ -318,7 +309,7 @@ class _InputPageState extends State<InputPage> {
       'kelas': kelas.toString() == "" ? "Belum Diisi" : kelas.toString(),
       'deadline': i == "" ? "Belum Diisi" : i,
       'catatan': catatan == "" ? "Belum Diisi" : catatan,
-      
+      'tampil' : catatantampil == "" ? "Belum Diisi" : catatantampil,
     }).whenComplete(() {
       setState(() {
         _loading = !_loading;
