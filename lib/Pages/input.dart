@@ -6,9 +6,13 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:intl/intl.dart';
+import 'package:management_tugas/Pages/home.dart';
 import 'package:management_tugas/widget/text_widget.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../assets.dart';
 
@@ -46,11 +50,12 @@ class _InputPageState extends State<InputPage> {
   ];
   var pelajaran;
   var kelas;
-  bool  _loading = false;
+  bool _loading = false;
   late int age = 0;
   var i = "";
   late String deatline = '';
   late DateTime pickedDate;
+  late DateTime? currentValue;
   int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
   late QuillController _controller;
   late TextEditingController _controllerTanggal = TextEditingController();
@@ -191,15 +196,17 @@ class _InputPageState extends State<InputPage> {
                                         initialTime: TimeOfDay.fromDateTime(
                                             currentValue ?? DateTime.now()),
                                       );
-                                      // setState(() {
-                                      //   endTime = DateTimeField.combine(date, time)
-                                      //       .millisecondsSinceEpoch;
-                                      // });
-                                      final formatForinput =
-                                          DateFormat("yyyy-MM-dd HH:mm:ss");
-                                      i = formatForinput.format(
-                                          DateTimeField.combine(date, time));
+                                      setState(() {
+                                        endTime =
+                                            DateTimeField.combine(date, time)
+                                                .millisecondsSinceEpoch;
+                                        print(
+                                            DateTimeField.combine(date, time));
+                                      });
 
+                                      i = DateTimeField.combine(date, time)
+                                          .toString();
+                                      print("tanggalnya :" + _controllerTanggal.text);
                                       return DateTimeField.combine(date, time);
                                     } else {
                                       return currentValue;
@@ -253,12 +260,10 @@ class _InputPageState extends State<InputPage> {
                                               .toList(),
                                           onChanged: (value) => setState(() {
                                             this.kelas = value!;
-                                            
                                           }),
                                         ),
                                       ),
                                     ),
-                                    
                                   ],
                                 ),
                                 LineWiget(),
@@ -303,16 +308,22 @@ class _InputPageState extends State<InputPage> {
     setState(() {
       _loading = !_loading;
     });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var login = prefs.getString('username');
     DocumentReference collection = await collectionReference.add({
       'pelajaran':
           pelajaran.toString() == "" ? "Belum Diisi" : pelajaran.toString(),
       'kelas': kelas.toString() == "" ? "Belum Diisi" : kelas.toString(),
       'deadline': i == "" ? "Belum Diisi" : i,
       'catatan': catatan == "" ? "Belum Diisi" : catatan,
-      'tampil' : catatantampil == "" ? "Belum Diisi" : catatantampil,
+      'tampil': catatantampil == "" ? "Belum Diisi" : catatantampil,
+      'username': login.toString()
     }).whenComplete(() {
       setState(() {
-        _loading = !_loading;
+         Navigator.push(
+              context,
+              PageTransition(
+                  type: PageTransitionType.rightToLeft, child: Home(name: login.toString())));
       });
     });
     return collection;

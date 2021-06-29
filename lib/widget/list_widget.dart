@@ -3,37 +3,33 @@ import 'package:flutter/material.dart';
 import '../assets.dart';
 
 class ListTask extends StatefulWidget {
-  
   final Function() onTapCancel;
   final String nameCategori, catatan;
-  final String nameTask, deadLine;
-  
-  const ListTask(
-      {
-      Key? key,
-      required this.nameCategori,
-      required this.nameTask,
-      required this.onTapCancel,
-      
-      required this.catatan,
-      required this.deadLine,})
-      : super(key: key);
+  final String nameTask;
+  final Widget deadline;
+  const ListTask({
+    Key? key,
+    required this.nameCategori,
+    required this.nameTask,
+    required this.onTapCancel,
+    required this.catatan,
+    required this.deadline,
+  }) : super(key: key);
 
   @override
   _ListTaskState createState() => _ListTaskState();
 }
 
 class _ListTaskState extends State<ListTask> {
-  late bool sucses= false;
+  late bool sucses = false;
   void onsucses() {
     setState(() {
       sucses = !sucses;
-      
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8),
       margin: EdgeInsets.symmetric(vertical: 4),
@@ -54,7 +50,6 @@ class _ListTaskState extends State<ListTask> {
             flex: 2,
             child: Center(
               child: InkWell(
-                
                 onTap: onsucses,
                 child: Container(
                   height: 26,
@@ -77,11 +72,11 @@ class _ListTaskState extends State<ListTask> {
             ),
           ),
           Expanded(
-            flex: 5,
+            flex: 6,
             child: Row(
               children: [
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,8 +84,8 @@ class _ListTaskState extends State<ListTask> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 7, vertical: 2),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                           color: Colors.grey,
                           child: Text(
                             widget.nameCategori,
@@ -133,19 +128,9 @@ class _ListTaskState extends State<ListTask> {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
-                  child: Text(
-                    widget.deadLine,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: sucses == false
-                        ? TextStyle(color: Colors.grey)
-                        : TextStyle(
-                            color: Colors.grey,
-                            decoration: TextDecoration.lineThrough,
-                            decorationThickness: 2.85,
-                          ),
-                  ),
+                  flex: 2,
+                  child: widget.deadline,
+                  
                 ),
               ],
             ),

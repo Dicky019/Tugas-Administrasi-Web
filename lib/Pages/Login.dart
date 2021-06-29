@@ -15,7 +15,9 @@ class _LoginState extends State<Login> {
   Future login() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('username', name.text).whenComplete(() => Navigator.push(
-        context, PageTransition(type: PageTransitionType.fade, child: Home())));
+        context,
+        PageTransition(
+            type: PageTransitionType.fade, child: Home(name: name.text))));
   }
 
   @override
@@ -30,18 +32,21 @@ class _LoginState extends State<Login> {
               child: TextField(
                 controller: name,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.teal)),
-                  hintText: "Enter Your Name...",
-                  labelText: "Name",
+                  border: OutlineInputBorder(borderSide: BorderSide()),
+                  labelText: "Enter Your Name...",
                   hintStyle: TextStyle(
                     color: Colors.purple,
                   ),
                 ),
               ),
             ),
-            OutlinedButton.icon(
-                onPressed: login, icon: Icon(Icons.login), label: Text("Login"))
+            ElevatedButton.icon(
+              onPressed: login,
+              icon: Icon(Icons.login),
+              label: Text("Login"),
+            )
+            // OutlinedButton.icon(
+            //     onPressed: login, icon: Icon(Icons.login), label: Text("Login"))
           ],
         ),
       ),
